@@ -86,6 +86,7 @@ curl http://localhost:8000/v1/audio/voices
 Synthesize Speech
 
 #### Test audio Generation of voices
+```bash
 curl -X POST \
   http://localhost:8000/v1/audio/speech \
   -H "Content-Type: application/json" \
@@ -94,7 +95,7 @@ curl -X POST \
     "voice": "EN-AU"
   }' \
   --output test_audio.mp3
-
+```
 
 ## Bonus: Running the Original MeloTTS WebUI
 These instructions are for running the original Gradio WebUI developed by MyShell-AI, which is separate from the FastAPI server above. It's recommended to do this in a different folder and a new, clean environment.
