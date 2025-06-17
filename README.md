@@ -16,79 +16,107 @@ This project provides an easy-to-use HTTP interface for MeloTTS, allowing you to
 
 ## 🚀 Installation
 
-For a reliable setup and to avoid dependency issues, please follow these steps exactly. Tested in linux mint 20.
+For a reliable setup, please follow these steps exactly. This guide has been tested on Debian-based systems like Linux Mint 20 and Ubuntu 24.04.
 
-1.  **Clone the Repository**
-    ```bash
-    git clone [https://github.com/highfillgoods/MeloTTS-API-Locally.git](https://github.com/highfillgoods/MeloTTS-API-Locally.git)
-    cd MeloTTS-API-Locally
-    ```
+### 📋 Step 1: System Prerequisites
 
-2.  **Create and Activate a Clean Python Environment**
-    Using a dedicated environment prevents conflicts with other projects. This example uses `conda`.
-    ```bash
-    conda create --name melo_api_env python=3.11 -y
-    conda activate melo_api_env
-    ```
+#### For a barebones system, you will need to install Git and Python's core tools first.
 
-3.  **Install All Dependencies**
-    This single command installs all necessary packages from the perfected requirements file.
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install git python3 python3-pip python3-venv -y
+```
+### 📦 Step 2: Clone This Repository
 
----
 
-## ▶️ Running the API Server
+git clone [https://github.com/highfillgoods/MeloTTS-API-Locally.git](https://github.com/highfillgoods/MeloTTS-API-Locally.git)
+cd MeloTTS-API-Locally
+🌿 Step 3: Create and Activate a Virtual Environment
+#### Using a dedicated environment helps prevent conflicts. Choose one of the following options.
 
-Once the installation is complete, start the API server with Uvicorn.
+## Option A: Using conda
 
+conda create --name melo_api_env python=3.11 -y
+conda activate melo_api_env
+## Option B: Using venv (Standard Python)
+
+python3 -m venv venv
+source venv/bin/activate
+
+### 🐍 Step 4: Install Python Dependencies
+#### This single command installs all necessary Python packages from the perfected requirements.txt file.
+
+
+pip install -r requirements.txt
+### 🧠 Step 5: Download NLTK Language Models
+#### The text processor requires data packages from the NLTK library. This command downloads the necessary models.
+
+python3 -m nltk.downloader averaged_perceptron_tagger punkt
+# ▶️ Running the API Server
+#### Once the installation is complete, start the API server with Uvicorn.
+
+```bash
 uvicorn melotts_api:app --host 0.0.0.0 --port 8000
+```
+The server will start, load the MeloTTS model, and become available at http://0.0.0.0:8000.
 
-The server will start, load the MeloTTS model into memory, and become available at http://0.0.0.0:8000.
 
-## 🔌 Connecting to Open WebUI
-![Open WebUI Audio Settings](open-webui-settings.png)
+
+###  🔌 Connecting to Open WebUI
 This API is designed to work directly with Open WebUI.
 
-In Open WebUI, navigate to the Admin Panel by clicking your name in the bottom-left corner and selecting Settings.
-Go to the Audio section.
+![Open WebUI Audio Settings](open-webui-settings.png)
+
+
+In Open WebUI, navigate to Settings > Audio.
 Configure the TTS Settings section with the following values:
 Text-to-Speech Engine: OpenAI
 OpenAI API Base URL: http://localhost:8000/v1
 OpenAI API Key: Can be set to anything (e.g., 12345).
 Your settings should look like this:
 
-Now you can input any of the available English voices (e.g., EN-BR, EN-US) you have previously downloaded from MeloTTS.
-
-🛠️ Direct API Usage (Advanced)
+### 🛠️ Direct API Usage (Advanced)
 You can also interact with the API directly using tools like curl.
 
-## List Available Models
+#### List Available Models
 curl http://localhost:8000/v1/models
 
-## List Available Voices
+#### List Available Voices
 curl http://localhost:8000/v1/audio/voices
+Synthesize Speech
 
-## Synthesize Speech
-This example synthesizes text with the Australian voice and saves it as test_audio.mp3.
-
-
-## audio generator .mp3 test
+#### Test audio Generation of voices
 curl -X POST \
   http://localhost:8000/v1/audio/speech \
   -H "Content-Type: application/json" \
   --data '{
-    "input": "Hello, this is a test from the land down under. your vegemite sandwich is ready.",
-    "voice": "EN-AU",
-    "model": "EN-AU"
+    "input": "Hello, this is a test from the land down under.",
+    "voice": "EN-AU"
   }' \
   --output test_audio.mp3
 
 
+## Bonus: Running the Original MeloTTS WebUI
+These instructions are for running the original Gradio WebUI developed by MyShell-AI, which is separate from the FastAPI server above. It's recommended to do this in a different folder and a new, clean environment.
 
-## Acknowledgments
-This project is a wrapper around the excellent MeloTTS text-to-speech engine by MyShell.ai.
-The API wrapper, debugging, documentation, and setup process were created with the assistance of Google Gemini.
-License
-This project is licensed under the MIT License.
+Clone the Original MeloTTS Repository
+
+
+### Make sure you are in your home directory or outside your API project folder
+git clone [https://github.com/myshell-ai/MeloTTS.git](https://github.com/myshell-ai/MeloTTS.git)
+cd MeloTTS
+Create a Separate, Clean Environment (e.g., conda create --name melo_ui_env python=3.11 -y) and activate it.
+
+#### Install All WebUI Dependencies. Note: We do not use pip install melo.
+
+
+pip install torch torchvision torchaudio gradio librosa tqdm transformers cn2an pypinyin jieba eng_to_ipa inflect unidecode num2words pykakasi fugashi g2p_en anyascii jamo gruut cached_path unidic
+
+
+python3 -m nltk.downloader averaged_perceptron_tagger punkt
+python3 -m melo.app
+
+## Open in browser for Original MeloTTS WebUI
+http://localhost:7860
+
+
